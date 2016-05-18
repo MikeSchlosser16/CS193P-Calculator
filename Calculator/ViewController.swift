@@ -10,16 +10,35 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    //Do outlet so we get proprty not method
+    @IBOutlet weak var display: UILabel!
+    var userInTheMiddleOfTyping = false
+    
+    @IBAction func touchDigit(sender: UIButton) {
+        //Optional, type of set of not set, so unwrap it. Pretty cool
+        let digit = sender.currentTitle!
+        if userInTheMiddleOfTyping{
+            let textCurrentlyInDisplay = display.text!
+            display.text! = textCurrentlyInDisplay + digit
+        }
+        else{
+            //Get rid of the 0, set it to just 0.
+            display.text! = digit
+        }
+       userInTheMiddleOfTyping = true
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    @IBAction func performOperation(sender: UIButton){
+        //Start again with just digit displayed after we hit math operation
+        userInTheMiddleOfTyping = false
+        //If can let mathematical symbol = current title, unwrap. No need for ! now
+        if let mathematicalSymbol = sender.currentTitle{
+            if mathematicalSymbol == "π"{
+                display.text = String(M_PI)
+            }
+        }
+        
+        
     }
-
-
+    
 }
-
