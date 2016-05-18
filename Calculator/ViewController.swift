@@ -11,10 +11,10 @@ import UIKit
 class ViewController: UIViewController {
 
     //Do outlet so we get proprty not method
-    @IBOutlet weak var display: UILabel!
-    var userInTheMiddleOfTyping = false
+    @IBOutlet private weak var display: UILabel!
+    private var userInTheMiddleOfTyping = false
     
-    @IBAction func touchDigit(sender: UIButton) {
+    @IBAction private func touchDigit(sender: UIButton) {
         //Optional, type of set of not set, so unwrap it. Pretty cool
         let digit = sender.currentTitle!
         if userInTheMiddleOfTyping{
@@ -23,20 +23,35 @@ class ViewController: UIViewController {
         }
         else{
             //Get rid of the 0, set it to just 0.
-            display.text! = digit
+            display.text = digit
         }
        userInTheMiddleOfTyping = true
     }
     
-    @IBAction func performOperation(sender: UIButton){
+    //Computed property
+    private var displayValue: Double{
+        set{
+            display.text = String(newValue)
+        }
+        get{
+            return Double(display.text!)!
+        }
+    }
+    
+    //Creating brain to communicate with Model of MVC, get 1 free initializer.
+    private var brain = CalculatorBrain()
+    @IBAction private func performOperation(sender: UIButton){
         //Start again with just digit displayed after we hit math operation
-        userInTheMiddleOfTyping = false
+        if userInTheMiddleOfTyping{
+            brain.setOperand(displayValue)
+            userInTheMiddleOfTyping = false
+        }
+        
         //If can let mathematical symbol = current title, unwrap. No need for ! now
         if let mathematicalSymbol = sender.currentTitle{
-            if mathematicalSymbol == "π"{
-                display.text = String(M_PI)
-            }
+            brain.performOperation(mathematicalSymbol)
         }
+        displayValue = brain.result
         
         
     }
